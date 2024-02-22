@@ -1,69 +1,58 @@
-const express = require('express');
+const express = require(`express`);
 const app = express();
 const port = 3000;
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+const {connection} = require(`./db/db_config`);
+
+app.get(`/`, (req, res) => {
+  res.send(`Root Page Not Defined`);
 });
 
-/* Sample code for calculator
+app.get(`/select`, (req, res) => {
+  let term = req.query.term;
 
-app.get('/add', (req, res) => {
-    const num1 = parseInt(req.query.num1);
-    const num2 = parseInt(req.query.num2);
-  
-    const result = num1 + num2;
-    res.json({ result });
-});
-  
-app.get('/sub', (req, res) => {
-    const num1 = parseInt(req.query.num1);
-    const num2 = parseInt(req.query.num2);
-  
-    const result = num1 - num2;
-    res.json({ result });
-});
-  
-app.get('/mul', (req, res) => {
-    const num1 = parseInt(req.query.num1);
-    const num2 = parseInt(req.query.num2);
-  
-    const result = num1 * num2;
-    res.json({ result });
-});
-  
-app.get('/div', (req, res) => {
-    const num1 = parseFloat(req.query.num1);
-    const num2 = parseFloat(req.query.num2);
-
-    if (isNaN(num1) || isNaN(num2)) {
-        return res.status(400).send('Both num1 and num2 must be numbers');
+  connection.query(`SELECT * FROM movie_data WHERE title LIKE '?%'`,[term], (err, results) => {
+    if (err) {
+      console.log(`Database Error: ${err}`);
+      return;
     }
-
-    if (num2 === 0) {
-        return res.status(400).send('Divide by zero');
+    else{
+      console.log(results);
+      res.send(results);
     }
-
-    const result = num1 / num2;
-    res.json({ result });
+  });
 });
 
-app.get('/mod', (req, res) => {
-    const num1 = parseInt(req.query.num1, 10);
-    const num2 = parseInt(req.query.num2, 10);
+app.get('/delete', (req, res) => {
+  let id = req.query.id;
 
-    if (isNaN(num1) || isNaN(num2)) {
-        return res.status(400).send('Both num1 and num2 must be numbers');
+  connection.query(`DELETE FROM movie_data WHERE movie_id = ?`,[id], (err, results) => {
+    if (err) {
+      console.log(`Database Error: ${err}`);
+      return;
     }
-
-    if (num2 === 0) {
-        return res.status(400).send('Divide by zero');
-    }
-
-    const result = num1 % num2;
-    res.json({ result });
+    else{
+      console.log(`Deleted ${id} from movie_data`);
+      console.log(results);
+      res.send(results);
+    }   
+  });
 });
-*/
+
+app.get('/langFilter' , (req, res) => {
+  let filter = req.query.filter;
+
+  connection.query(`SELECT * FROM movie_data WHERE language = ?`,[filter], (err, results) => {
+    if (err) {
+      console.log(`Database Error: ${err}`);
+      return;
+    }
+    else{
+      console.log(results);
+      res.send(results);
+    }
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
