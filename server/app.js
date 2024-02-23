@@ -1,9 +1,11 @@
 const express = require(`express`);
 const bodyParser = require(`body-parser`);
+const cors = require(`cors`);
 const {controllerMovie} = require('./controllers/movieController');
 
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 
 const port = 3000;

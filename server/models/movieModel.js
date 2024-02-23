@@ -24,7 +24,7 @@ const modelMovie = {
     },
 
     getMovieByTitle: (title, callback) => {
-        connection.query(`SELECT * FROM movie_data WHERE title LIKE ?`, [title+'%'], (err, results) => {
+        connection.query(`SELECT * FROM movie_data WHERE title LIKE ?`, [`${title}%`], (err, results) => {
             if (err) {
                 console.error(err);
                 callback(err);
